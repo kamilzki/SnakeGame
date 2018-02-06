@@ -8,16 +8,17 @@ display_width = 800
 display_height = 600
 gameDisplay = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption("Snake")
-FPS = 3
+FPS = 30
 
 background = (0, 30, 0)
 white = (255, 255, 255)
 black = (0, 0, 0)
 red = (255, 0, 0)
-head_color = (0, 150, 0)
+head_color = (0, 100, 0)
 body_color = (0, 175, 0)
 
 block_size = 20
+apple_size = 10
 clock = pygame.time.Clock()
 
 display_center = (display_width / 2, display_height / 2)
@@ -55,8 +56,8 @@ def gameLoop():
     score = 0
 
     def randomApple():
-        randAppleX = round(random.randrange(0, display_width - block_size) / block_size) * block_size
-        randAppleY = round(random.randrange(0, display_height - block_size) / block_size) * block_size
+        randAppleX = round(random.randrange(0, display_width - apple_size)) # / block_size) * block_size
+        randAppleY = round(random.randrange(0, display_height - apple_size)) # / block_size) * block_size
         return randAppleX, randAppleY
 
     randAppleX, randAppleY = randomApple()
@@ -83,6 +84,7 @@ def gameLoop():
 
             if event.type == pygame.QUIT:
                 gameExit = True
+                gameOver = False
 
             # control snake
             elif event.type == pygame.KEYDOWN:
@@ -117,12 +119,15 @@ def gameLoop():
             gameOver = True
             # pygame.quit()
         else:
-            if (snake.head_x == randAppleX and snake.head_y == randAppleY):
-                snake.scoreMore(randAppleX, randAppleY)
-                randAppleX, randAppleY = randomApple()
+            # eating apple
+            if ((snake.head_x + block_size >= randAppleX and snake.head_x <= randAppleX + apple_size)
+                and (snake.head_y + block_size >= randAppleY and snake.head_y <= randAppleY + apple_size)):
+                    snake.scoreMore(snake.head_x, snake.head_y)
+                    randAppleX, randAppleY = randomApple()
 
             gameDisplay.fill(background)
-            gameDisplay.fill(red, rect=[randAppleX, randAppleY, block_size, block_size])
+            #draw apple
+            gameDisplay.fill(red, rect=[randAppleX, randAppleY, apple_size, apple_size])
 
             # draw snake's head
             pygame.draw.rect(gameDisplay, head_color, [snake.head_x, snake.head_y, block_size, block_size])
