@@ -13,6 +13,7 @@ main_font = pygame.font.SysFont(None, font_size)
 
 
 class Game:
+
     def __init__(self, display_width=800, display_height=600, background=(0, 30, 0)):
         self.display_width = display_width
         self.display_height = display_height
